@@ -1,0 +1,19 @@
+=== Running the app
+
+Go to the root of the repository.
+
+Make sure you have Kafka broker running. The application expects it to be on defaults (localhost:9092). If thats not the case, change the configuration.
+
+`./mvnw clean package`
+
+Start the application in an IDE using
+`-Dspring.profiles.active=foo,baz_ok`
+Note the app starts successfully.
+
+Re-run the application with
+`-Dspring.profiles.active=foo,baz_fail`
+Note the exception thrown
+
+    `java.lang.IllegalStateException: The binder 'kafka1' cannot bind a com.sun.proxy.$Proxy68`
+
+Also, if the binder name is commented out as shown in `application.alternate.yml`, the application start-up succeeds in both cases.

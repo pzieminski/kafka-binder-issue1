@@ -1,0 +1,128 @@
+
+spring:
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            brokers: localhost:9092
+            configuration:
+              commit.interval.ms: 3000
+              state.dir: ${java.io.tmpdir}/kafka-streams
+      binders:
+        kafka1:
+          type: kstream
+
+---
+
+spring.profiles: foo
+
+spring:
+  cloud:
+    stream:
+
+      bindings:
+        foo-output:
+          destination: foo-output-topic
+          binder: kafka1
+        foo-input:
+          destination: foo-input-topic
+          group: foo-group
+          binder: kafka1
+
+      kafka:
+        streams:
+          bindings:
+            foo-output:
+              producer:
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                topic.properties:
+                  cleanup.policy: compact
+            foo-input:
+              consumer:
+                applicationId: foo-app
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                topic.properties:
+                  cleanup.policy: compact
+
+---
+
+spring.profiles: baz_ok
+
+spring:
+  cloud:
+    stream:
+
+      bindings:
+        baz-output:
+          destination: baz-output-topic
+          binder: kafka1
+        baz-input:
+          destination: baz-input-topic
+          group: baz-group
+          binder: kafka1
+
+      kafka:
+        streams:
+          bindings:
+            baz-output:
+              producer:
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                topic.properties:
+                  cleanup.policy: compact
+            baz-input:
+              consumer:
+                applicationId: baz-app
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                topic.properties:
+                  cleanup.policy: compact
+
+---
+
+spring.profiles: baz_fail
+
+spring:
+  cloud:
+    stream:
+
+      bindings:
+        baz-output:
+          destination: baz-output-topic
+          binder: kafka1
+        baz-input:
+          destination: baz-input-topic
+          group: baz-group
+          binder: kafka1
+        baz-global-input:
+          destination: foo-output-topic
+          group: baz-group
+          binder: kafka1
+
+      kafka:
+        streams:
+          bindings:
+            baz-output:
+              producer:
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                topic.properties:
+                  cleanup.policy: compact
+            baz-input:
+              consumer:
+                applicationId: baz-app
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                topic.properties:
+                  cleanup.policy: compact
+            baz-global-input:
+              consumer:
+                applicationId: baz-app
+                keySerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                valueSerde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                materializedAs: baz-global
+                topic.properties:
+                  cleanup.policy: compact
