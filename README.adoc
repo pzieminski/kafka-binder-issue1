@@ -16,4 +16,4 @@ Note the exception thrown
 
     `java.lang.IllegalStateException: The binder 'kafka1' cannot bind a com.sun.proxy.$Proxy68`
 
-Also, if the binder name is commented out as shown in `application.alternate.yml`, the application start-up succeeds in both cases.
+Also, if the binder name is commented out as shown in `src/main/resources/application.alternate.yml`, the application start-up succeeds in both cases.
